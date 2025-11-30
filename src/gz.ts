@@ -52,9 +52,10 @@ export function apply(ctx: Context) {
         const groupId = session.channelId
         if (!urlMap.has(groupId) || !gameMap.has(groupId)) return session.text('.url-or-game-not-set')
         const url = `${urlMap.get(groupId)}/games/${gameMap.get(groupId)}/scoreboard`
-        let loaded = false
+        // let loaded = false
+
+        const page = await ctx.puppeteer.page()
         try {
-          const page = await ctx.puppeteer.page()
 
           await page.goto(url, { waitUntil: 'domcontentloaded' , timeout: 15000})
 
@@ -92,7 +93,7 @@ export function apply(ctx: Context) {
           console.log(Math.ceil(box.width))
           console.log(Math.ceil(box.height))
           await page.setViewport({
-            width: 2000,
+            width: 6000,
             height: 2000,
             deviceScaleFactor: 1
           })
@@ -101,6 +102,7 @@ export function apply(ctx: Context) {
             type: "png",
             captureBeyondViewport: true
           })
+
           await session.send([
             `截至北京时间${dayjs().tz('Asia/Shanghai').format('MM-DD HH:mm')}，赛况参考 ${url}`,
             h.image(buffer, 'image/png'),
@@ -109,6 +111,8 @@ export function apply(ctx: Context) {
         } catch (err) {
           console.error(err)
           return '截图失败！'
+        } finally {
+          await page.close()
         }
 
 
@@ -416,5 +420,3 @@ function stopPushAuto(groupId: string, session: Session){
   }
 
 }
-
-
