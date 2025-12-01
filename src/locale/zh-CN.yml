@@ -62,7 +62,8 @@ _usage: |-
 
 commands:
   gz:
-    description: 订阅GZCTF平台赛事信息
+    description: |
+      订阅GZCTF平台赛事信息
     options:
       url: 指定url，结尾请勿保留/
       game: 设置赛事id

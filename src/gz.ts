@@ -27,12 +27,23 @@ export function apply(ctx: Context) {
 
   ctx
     .command('gz <message:text>')
-    .option('url', '-u', {authority: 4})
-    .option('start','-s',{authority: 4})
-    .option('status','-x', {authority: 4})
-    .option('game', '-g',{authority: 4})
-    .option('process','-p',{authority: 4})
+    .option('url', '-u 指定url，结尾请勿保留/', {authority: 4})
+    .option('start','-s 开启/停止推送',{authority: 4})
+    .option('status','-x 当前群聊配置情况', {authority: 4})
+    .option('game', '-g 设置赛事id',{authority: 4})
+    .option('process','-p 赛事进展，积分榜截图',{authority: 4})
     .action(async ({options, session}, message) => {
+
+
+      if (Object.keys(options).length === 0){
+        await session.send('可用的选项有：\n' +
+          '-u, --url  指定url，结尾请勿保留/\n' +
+          '-s, --start  开启/停止推送\n' +
+          '-x, --status  当前群聊配置情况\n' +
+          '-g, --game  设置赛事id\n' +
+          '-p, --process  赛事进展，积分榜截图')
+        return
+      }
 
       // console.log(options)
       // 当前群聊的赛事url、赛事信息
@@ -57,7 +68,7 @@ export function apply(ctx: Context) {
         const page = await ctx.puppeteer.page()
         try {
 
-          await page.goto(url, { waitUntil: 'domcontentloaded' , timeout: 15000})
+          await page.goto(url, { waitUntil: 'domcontentloaded' , timeout: 15004})
 
           await page.waitForSelector('div.mantine-TableScrollContainer-scrollContainer',{
             visible: true,
